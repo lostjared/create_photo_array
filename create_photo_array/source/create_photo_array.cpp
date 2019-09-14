@@ -12,6 +12,8 @@
 #include<vector>
 #include<algorithm>
 
+std::string prefix_string = "http://lostsidedead.biz/filtered/";
+
 std::string string_to_lower(const std::string &text) {
     std::string temp;
     for(int i = 0; i < text.length(); ++i) {
@@ -92,7 +94,7 @@ void write_page(std::fstream &file, std::vector<std::string> &vf, int page_num, 
         s << "thumbnail/thumbnail." << thumb_name;
         cv::imwrite(s.str(), new_frame);
         filename = filename.substr(2, filename.length());
-        file << "<a href=\"http://lostsidedead.biz/filtered/" << filename << "\"><img src=\"http://lostsidedead.biz/filtered/thumbnail/thumbnail." << thumb_name << "\"></a>\n";
+        file << "<a href=\"" << prefix_string << filename << "\"><img src=\"" << prefix_string << "thumbnail/thumbnail." << thumb_name << "\"></a>\n";
         ++counter;
         if((counter%5)==0)
             file << "<br>\n\n";
@@ -101,7 +103,10 @@ void write_page(std::fstream &file, std::vector<std::string> &vf, int page_num, 
 }
 
 int main(int argc, char **argv) {
-    if(argc == 2) {
+    if(argc == 2 || argc == 3) {
+        if(argc == 3)
+            prefix_string = argv[2];
+        
         std::vector<std::string> found_files;
         add_directory(argv[1], "png", found_files);
         if(found_files.size()==0) {
@@ -114,7 +119,8 @@ int main(int argc, char **argv) {
             std::cerr << "Error could not create thumbnail directory...\n";
         }
         int value_offset = 0;
-        for(int i = 0; i < found_files.size()/200; ++i) {
+        
+        for(int i = 0; i < (found_files.size()/200)+1; ++i) {
             std::fstream file;
             std::ostringstream stream;
             stream << "thumbnail_page-" << std::setfill('0') << std::setw(5) << i << ".html";
@@ -129,8 +135,8 @@ int main(int argc, char **argv) {
             write_page(file, found_files, i, value_offset, value_offset+200);
         // end loop
             stream.str("");
-            stream << "http://lostsidedead.biz/filtered/thumbnail_page-" << std::setfill('0') << std::setw(5) << i+1 << ".html";
-            if(i < (found_files.size()/200)-1)
+            stream << prefix_string << "thumbnail_page-" << std::setfill('0') << std::setw(5) << i+1 << ".html";
+            if(i < (found_files.size()/200))
                 file << "\n<br><br><br><a href=\"" << stream.str() << "\">Next Page</a><br><br>\n\n";
             file << "\n</body></html>\n";
             file.close();
