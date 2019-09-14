@@ -93,7 +93,8 @@ void write_page(std::fstream &file, std::vector<std::string> &vf, int page_num, 
         std::stringstream s;
         s << "thumbnail/thumbnail." << thumb_name;
         cv::imwrite(s.str(), new_frame);
-        filename = filename.substr(2, filename.length());
+        if(filename[0] == '.' && filename[1] == '/')
+            filename = filename.substr(2, filename.length());
         file << "<a href=\"" << prefix_string << filename << "\"><img src=\"" << prefix_string << "thumbnail/thumbnail." << thumb_name << "\"></a>\n";
         ++counter;
         if((counter%5)==0)
