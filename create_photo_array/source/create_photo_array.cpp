@@ -106,7 +106,6 @@ int main(int argc, char **argv) {
     if(argc == 2 || argc == 3) {
         if(argc == 3)
             prefix_string = argv[2];
-        
         std::vector<std::string> found_files;
         add_directory(argv[1], "png", found_files);
         if(found_files.size()==0) {
@@ -131,9 +130,7 @@ int main(int argc, char **argv) {
             }
             file << "<!DOCTYPE html><html><head><title>Acid Cam Photos Page " << i << "</title></head>\n";
             file << "<body>\n";
-        // loop
             write_page(file, found_files, i, value_offset, value_offset+200);
-        // end loop
             stream.str("");
             stream << prefix_string << "thumbnail_page-" << std::setfill('0') << std::setw(5) << i+1 << ".html";
             if(i < (found_files.size()/200))
