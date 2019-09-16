@@ -13,7 +13,7 @@
 #include<algorithm>
 
 std::string prefix_string = "http://lostsidedead.biz/filtered/";
-
+bool output_thumbnail = false;
 std::string string_to_lower(const std::string &text) {
     std::string temp;
     for(int i = 0; i < text.length(); ++i) {
@@ -88,25 +88,30 @@ void write_page(std::fstream &file, std::vector<std::string> &vf, int page_num, 
     for(int i = start; i < max && i < vf.size(); ++i) {
         std::string filename = vf[i];
         std::string thumb_name = filename.substr(filename.rfind("/")+1, filename.length());
-        cv::Mat fname = cv::imread(filename);
-        cv::Mat new_frame = resizeKeepAspectRatio(fname, cv::Size(320, 180), cv::Scalar(255,255,255));
-        std::stringstream s;
-        s << "thumbnail/thumbnail." << thumb_name;
-        cv::imwrite(s.str(), new_frame);
+        if(output_thumbnail == true) {
+            cv::Mat fname = cv::imread(filename);
+            cv::Mat new_frame = resizeKeepAspectRatio(fname, cv::Size(320, 180), cv::Scalar(255,255,255));
+            std::stringstream s;
+            s << "thumbnail/thumbnail." << thumb_name;
+            cv::imwrite(s.str(), new_frame);
+        }
         if(filename[0] == '.' && filename[1] == '/')
             filename = filename.substr(2, filename.length());
         file << "<a href=\"" << prefix_string << filename << "\"><img src=\"" << prefix_string << "thumbnail/thumbnail." << thumb_name << "\"></a>\n";
         ++counter;
         if((counter%5)==0)
             file << "<br>\n\n";
-        std::cout << "Wrote: " << filename << " thumbnail: thumbnail." << thumb_name << "\n";
+        if(output_thumbnail == true) std::cout << "Wrote: " << filename << " thumbnail: thumbnail." << thumb_name << "\n";
     }
 }
 
 int main(int argc, char **argv) {
-    if(argc == 2 || argc == 3) {
+    if(argc == 2 || argc == 3 || argc == 4) {
         if(argc == 3)
             prefix_string = argv[2];
+        if(argc == 4 && std::string(argv[2]) == "nothumb") {
+            output_thumbnail = false;
+        }
         std::vector<std::string> found_files;
         add_directory(argv[1], "png", found_files);
         if(found_files.size()==0) {
@@ -140,6 +145,7 @@ int main(int argc, char **argv) {
             file.close();
             value_offset += 200;
         }
+        std::cout << "complete...\n";
     }
     return 0;
 }
