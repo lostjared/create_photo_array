@@ -109,7 +109,7 @@ int main(int argc, char **argv) {
     if(argc == 2 || argc == 3 || argc == 4) {
         if(argc == 3)
             prefix_string = argv[2];
-        if(argc == 4 && std::string(argv[2]) == "nothumb") {
+        if(argc == 4 && std::string(argv[3]) == "nothumb") {
             output_thumbnail = false;
         }
         std::vector<std::string> found_files;
