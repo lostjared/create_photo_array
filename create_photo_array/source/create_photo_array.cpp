@@ -13,7 +13,8 @@
 #include<algorithm>
 
 std::string prefix_string = "http://lostsidedead.biz/filtered/";
-bool output_thumbnail = false;
+bool output_thumbnail = true;
+
 std::string string_to_lower(const std::string &text) {
     std::string temp;
     for(int i = 0; i < text.length(); ++i) {
