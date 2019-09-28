@@ -112,6 +112,7 @@ int main(int argc, char **argv) {
             prefix_string = argv[2];
         if(argc == 4 && std::string(argv[3]) == "nothumb") {
             output_thumbnail = false;
+            prefix_string = argv[2];
         }
         std::vector<std::string> found_files;
         add_directory(argv[1], "png", found_files);
