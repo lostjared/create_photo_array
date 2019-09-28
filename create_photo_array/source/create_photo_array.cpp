@@ -148,6 +148,9 @@ int main(int argc, char **argv) {
             value_offset += 200;
         }
         std::cout << "complete...\n";
+    } else {
+        std::cout << argv[0] << ": Use with arguments\n";
+        std::cout << "create_photo_array path\n" << "create_photo_array path prefix\n" << "create_photo_array path prefix nothumb\n";
     }
     return 0;
 }
