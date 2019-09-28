@@ -141,8 +141,15 @@ int main(int argc, char **argv) {
             write_page(file, found_files, i, value_offset, value_offset+200);
             stream.str("");
             stream << prefix_string << "thumbnail_page-" << std::setfill('0') << std::setw(5) << i+1 << ".html";
+            std::ostringstream stream_prev;
+            stream_prev << prefix_string << "thumbnail_page-" << std::setfill('0') << std::setw(5) << i-1 << ".html";
+            file << "<br><br>\n";
+            if(i > 0)
+                file << "<a href=\"" << stream.str() << "\">Previous Page</a> - ";
+            
             if(i < (found_files.size()/200))
-                file << "\n<br><br><br><a href=\"" << stream.str() << "\">Next Page</a><br><br>\n\n";
+                file << "<a href=\"" << stream.str() << "\">Next Page</a><br><br>\n\n";
+            
             file << "\n</body></html>\n";
             file.close();
             value_offset += 200;
