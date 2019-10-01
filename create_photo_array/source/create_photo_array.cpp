@@ -13,6 +13,7 @@
 #include<algorithm>
 
 std::string prefix_string = "http://lostsidedead.biz/filtered/";
+std::string thumbnail_prefix = "http://lostsidedead.biz/filtered/thumbnail/";
 bool output_thumbnail = true;
 
 std::string string_to_lower(const std::string &text) {
@@ -98,7 +99,7 @@ void write_page(std::fstream &file, std::vector<std::string> &vf, int page_num, 
         }
         if(filename[0] == '.' && filename[1] == '/')
             filename = filename.substr(2, filename.length());
-        file << "<a href=\"" << prefix_string << filename << "\"><img src=\"" << prefix_string << "thumbnail/thumbnail." << thumb_name << "\"></a>\n";
+        file << "<a href=\"" << prefix_string << filename << "\"><img src=\"" << thumbnail_prefix << "thumbnail/thumbnail." << thumb_name << "\"></a>\n";
         ++counter;
         if((counter%5)==0)
             file << "<br>\n\n";
@@ -107,13 +108,15 @@ void write_page(std::fstream &file, std::vector<std::string> &vf, int page_num, 
 }
 
 int main(int argc, char **argv) {
-    if(argc == 2 || argc == 3 || argc == 4) {
-        if(argc == 3)
-            prefix_string = argv[2];
-        if(argc == 4 && std::string(argv[3]) == "nothumb") {
+    if(argc == 5) {
+        if(std::string(argv[4]) == "nothumb")
             output_thumbnail = false;
-            prefix_string = argv[2];
-        }
+        else
+            output_thumbnail = true;
+        
+        prefix_string = argv[2];
+        thumbnail_prefix = argv[3];
+        
         std::vector<std::string> found_files;
         add_directory(argv[1], "png", found_files);
         if(found_files.size()==0) {
@@ -157,7 +160,7 @@ int main(int argc, char **argv) {
         std::cout << "complete...\n";
     } else {
         std::cout << argv[0] << ": Use with arguments\n";
-        std::cout << "create_photo_array path\n" << "create_photo_array path prefix\n" << "create_photo_array path prefix nothumb\n";
+        std::cout << "create_photo_array path prefix thumbnail_prefix thumb/nothumb\n";
     }
     return 0;
 }
