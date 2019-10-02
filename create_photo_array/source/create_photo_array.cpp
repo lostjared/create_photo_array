@@ -108,59 +108,76 @@ void write_page(std::fstream &file, std::vector<std::string> &vf, int page_num, 
 }
 
 int main(int argc, char **argv) {
-    if(argc == 5) {
-        if(std::string(argv[4]) == "nothumb")
-            output_thumbnail = false;
-        else
-            output_thumbnail = true;
-        
-        prefix_string = argv[2];
-        thumbnail_prefix = argv[3];
-        
-        std::vector<std::string> found_files;
-        add_directory(argv[1], "png", found_files);
-        if(found_files.size()==0) {
-            std::cout << "create_photo_array: found zero files...\n";
-            exit(EXIT_SUCCESS);
-        }
-        std::sort(found_files.begin(), found_files.end());
-        const int dir_err = mkdir("thumbnail", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-        if(dir_err == -1) {
-            std::cerr << "Error could not create thumbnail directory...\n";
-        }
-        int value_offset = 0;
-        
-        for(int i = 0; i < (found_files.size()/200)+1; ++i) {
-            std::fstream file;
-            std::ostringstream stream;
-            stream << "thumbnail_page-" << std::setfill('0') << std::setw(5) << i << ".html";
-            file.open(stream.str(), std::ios::out);
-            if(!file.is_open()) {
-                std::cerr << "Could not open file: " << stream.str() << " failure...\n";
-                exit(EXIT_FAILURE);
+    std::string path;
+    if(argc > 1) {
+        int opt = 0;
+        while((opt = getopt(argc, argv, "p:nr:t:")) != -1) {
+            switch(opt) {
+                case 'p':
+                    path = optarg;
+                    break;
+                case 'n':
+                    output_thumbnail = false;
+                    break;
+                case 'r':
+                    prefix_string = optarg;
+                    break;
+                case 't':
+                    thumbnail_prefix = optarg;
+                    break;
             }
-            file << "<!DOCTYPE html><html><head><title>Acid Cam Photos Page " << i << "</title></head>\n";
-            file << "<body>\n";
-            write_page(file, found_files, i, value_offset, value_offset+200);
-            stream.str("");
-            stream << prefix_string << "thumbnail_page-" << std::setfill('0') << std::setw(5) << i+1 << ".html";
-            std::ostringstream stream_prev;
-            stream_prev << prefix_string << "thumbnail_page-" << std::setfill('0') << std::setw(5) << i-1 << ".html";
-            file << "<br><br>\n";
-            if(i > 0)
-                file << "<a href=\"" << stream.str() << "\">Previous Page</a> - ";
-            
-            if(i < (found_files.size()/200))
-                file << "<a href=\"" << stream.str() << "\">Next Page</a><br><br>\n\n";
-            
-            file << "\n</body></html>\n";
-            file.close();
-            value_offset += 200;
         }
-        std::cout << "complete...\n";
-    } else {
+        if(path.length() > 0) {
+            
+            std::vector<std::string> found_files;
+            add_directory(path, "png", found_files);
+            if(found_files.size()==0) {
+                std::cout << "create_photo_array: found zero files...\n";
+                exit(EXIT_SUCCESS);
+            }
+            std::sort(found_files.begin(), found_files.end());
+            const int dir_err = mkdir("thumbnail", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+            if(dir_err == -1) {
+                std::cerr << "Error could not create thumbnail directory...\n";
+            }
+            int value_offset = 0;
+            
+            for(int i = 0; i < (found_files.size()/200)+1; ++i) {
+                std::fstream file;
+                std::ostringstream stream;
+                stream << "thumbnail_page-" << std::setfill('0') << std::setw(5) << i << ".html";
+                file.open(stream.str(), std::ios::out);
+                if(!file.is_open()) {
+                    std::cerr << "Could not open file: " << stream.str() << " failure...\n";
+                    exit(EXIT_FAILURE);
+                }
+                file << "<!DOCTYPE html><html><head><title>Acid Cam Photos Page " << i << "</title></head>\n";
+                file << "<body>\n";
+                write_page(file, found_files, i, value_offset, value_offset+200);
+                stream.str("");
+                stream << prefix_string << "thumbnail_page-" << std::setfill('0') << std::setw(5) << i+1 << ".html";
+                std::ostringstream stream_prev;
+                stream_prev << prefix_string << "thumbnail_page-" << std::setfill('0') << std::setw(5) << i-1 << ".html";
+                file << "<br><br>\n";
+                if(i > 0)
+                    file << "<a href=\"" << stream.str() << "\">Previous Page</a> - ";
+                
+                if(i < (found_files.size()/200))
+                    file << "<a href=\"" << stream.str() << "\">Next Page</a><br><br>\n\n";
+                
+                file << "\n</body></html>\n";
+                file.close();
+                value_offset += 200;
+            }
+            std::cout << "complete...\n";
+        } else {
+            std::cout << "valid path required.. use -p path\n";
+            return 0;
+        }
+    }
+    else {
         std::cout << argv[0] << ": Use with arguments\n";
-        std::cout << "create_photo_array path prefix thumbnail_prefix thumb/nothumb\n";
+        std::cout << "-p path\n-n no output thumbnail\n-r prefix string\n-t thumbnail prefix\n";
     }
     return 0;
 }
