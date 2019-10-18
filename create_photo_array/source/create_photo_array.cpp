@@ -14,6 +14,8 @@
 
 std::string prefix_string = "http://lostsidedead.biz/filtered/";
 std::string thumbnail_prefix = "http://lostsidedead.biz/filtered/thumbnail/";
+std::string page_title = "Acid Cam Image Index Page ";
+
 bool output_thumbnail = true;
 
 std::string string_to_lower(const std::string &text) {
@@ -111,7 +113,7 @@ int main(int argc, char **argv) {
     std::string path;
     if(argc > 1) {
         int opt = 0;
-        while((opt = getopt(argc, argv, "p:nr:t:")) != -1) {
+        while((opt = getopt(argc, argv, "p:nr:t:s:")) != -1) {
             switch(opt) {
                 case 'p':
                     path = optarg;
@@ -124,6 +126,9 @@ int main(int argc, char **argv) {
                     break;
                 case 't':
                     thumbnail_prefix = optarg;
+                    break;
+                case 's':
+                    page_title = optarg;
                     break;
             }
         }
@@ -151,7 +156,7 @@ int main(int argc, char **argv) {
                     std::cerr << "Could not open file: " << stream.str() << " failure...\n";
                     exit(EXIT_FAILURE);
                 }
-                file << "<!DOCTYPE html><html><head><title>Acid Cam Photos Page " << i << "</title></head>\n";
+                file << "<!DOCTYPE html><html><head><title>" << page_title << " " << i << "</title></head>\n";
                 file << "<body>\n";
                 write_page(file, found_files, i, value_offset, value_offset+200);
                 stream.str("");
