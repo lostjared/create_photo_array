@@ -182,7 +182,7 @@ int main(int argc, char **argv) {
     }
     else {
         std::cout << argv[0] << ": Use with arguments\n";
-        std::cout << "-p path\n-n no output thumbnail\n-r prefix string\n-t thumbnail prefix\n";
+        std::cout << "-p path\n-n no output thumbnail\n-r prefix string\n-t thumbnail prefix\n-s page title\n";
     }
     return 0;
 }
