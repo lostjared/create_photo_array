@@ -4,6 +4,7 @@ This program creates some pages for my website to display my artwork.
 Thought I would upload it here for anyone who is interested how it was done.
 
 To use this program use the following arguments
+	
 	-p path
 	-n no output thumbnail
 	-r prefix string
