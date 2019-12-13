@@ -10,6 +10,8 @@ To use this program use the following arguments
 	-r prefix string
 	-t thumbnail prefix
 	-s page title
+	-f file title
+	-i num images per page
 
 to generate thumbnails for my site use:
 
@@ -21,7 +23,7 @@ to generate for a directory on your site use:
 
 or to use current path
 
-	$ create_photo_array -p path -r "" -t "" -s "Page title"
+	$ create_photo_array -p path -r "" -t "" -s "Page title" -f "Page" -i 200
 
 or desired path like this
 
