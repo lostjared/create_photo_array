@@ -4,6 +4,7 @@
 #include<string>
 #include<cctype>
 #include<cstdio>
+#include<cstdlib>
 #include<dirent.h>
 #include<sys/stat.h>
 #include<fstream>
@@ -16,6 +17,7 @@ std::string prefix_string = "http://lostsidedead.biz/filtered/";
 std::string thumbnail_prefix = "http://lostsidedead.biz/filtered/thumbnail/";
 std::string page_title = "Acid Cam Image Index Page ";
 std::string file_title = "Untitled_Images-";
+int num_images = 200;
 
 bool output_thumbnail = true;
 
@@ -134,6 +136,9 @@ int main(int argc, char **argv) {
                 case 'f':
                     file_title = optarg;
                     break;
+                case 'i':
+                    num_images = atoi(optarg);
+                    break;
             }
         }
         if(path.length() > 0) {
@@ -151,7 +156,7 @@ int main(int argc, char **argv) {
             }
             int value_offset = 0;
             
-            for(int i = 0; i < (found_files.size()/200)+1; ++i) {
+            for(int i = 0; i < (found_files.size()/num_images)+1; ++i) {
                 std::fstream file;
                 std::ostringstream stream;
                 stream << file_title << std::setfill('0') << std::setw(5) << i << ".html";
@@ -162,7 +167,7 @@ int main(int argc, char **argv) {
                 }
                 file << "<!DOCTYPE html><html><head><title>" << page_title << " - Page" << (i+1) << "</title></head>\n";
                 file << "<body>\n";
-                write_page(file, found_files, i, value_offset, value_offset+200);
+                write_page(file, found_files, i, value_offset, value_offset+num_images);
                 stream.str("");
                 stream << prefix_string << file_title << std::setfill('0') << std::setw(5) << i+1 << ".html";
                 std::ostringstream stream_prev;
@@ -171,12 +176,12 @@ int main(int argc, char **argv) {
                 if(i > 0)
                     file << "<a href=\"" << stream.str() << "\">Previous Page</a> - ";
                 
-                if(i < (found_files.size()/200))
+                if(i < (found_files.size()/num_images))
                     file << "<a href=\"" << stream.str() << "\">Next Page</a><br><br>\n\n";
                 
                 file << "\n</body></html>\n";
                 file.close();
-                value_offset += 200;
+                value_offset += num_images;
             }
             std::cout << "complete...\n";
         } else {
@@ -186,7 +191,7 @@ int main(int argc, char **argv) {
     }
     else {
         std::cout << argv[0] << ": Use with arguments\n";
-        std::cout << "-p path\n-n no output thumbnail\n-r prefix string\n-t thumbnail prefix\n-s page title\n-f file title\n";
+        std::cout << "-p path\n-n no output thumbnail\n-r prefix string\n-t thumbnail prefix\n-s page title\n-f file title\n-i how many images per page\n";
     }
     return 0;
 }
