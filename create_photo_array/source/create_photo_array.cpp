@@ -15,6 +15,7 @@
 std::string prefix_string = "http://lostsidedead.biz/filtered/";
 std::string thumbnail_prefix = "http://lostsidedead.biz/filtered/thumbnail/";
 std::string page_title = "Acid Cam Image Index Page ";
+std::string file_title = "Untitled_Images-";
 
 bool output_thumbnail = true;
 
@@ -130,6 +131,9 @@ int main(int argc, char **argv) {
                 case 's':
                     page_title = optarg;
                     break;
+                case 'f':
+                    file_title = optarg;
+                    break;
             }
         }
         if(path.length() > 0) {
@@ -150,19 +154,19 @@ int main(int argc, char **argv) {
             for(int i = 0; i < (found_files.size()/200)+1; ++i) {
                 std::fstream file;
                 std::ostringstream stream;
-                stream << "thumbnail_page-" << std::setfill('0') << std::setw(5) << i << ".html";
+                stream << file_title << std::setfill('0') << std::setw(5) << i << ".html";
                 file.open(stream.str(), std::ios::out);
                 if(!file.is_open()) {
                     std::cerr << "Could not open file: " << stream.str() << " failure...\n";
                     exit(EXIT_FAILURE);
                 }
-                file << "<!DOCTYPE html><html><head><title>" << page_title << " " << i << "</title></head>\n";
+                file << "<!DOCTYPE html><html><head><title>" << page_title << " - Page" << (i+1) << "</title></head>\n";
                 file << "<body>\n";
                 write_page(file, found_files, i, value_offset, value_offset+200);
                 stream.str("");
-                stream << prefix_string << "thumbnail_page-" << std::setfill('0') << std::setw(5) << i+1 << ".html";
+                stream << prefix_string << file_title << std::setfill('0') << std::setw(5) << i+1 << ".html";
                 std::ostringstream stream_prev;
-                stream_prev << prefix_string << "thumbnail_page-" << std::setfill('0') << std::setw(5) << i-1 << ".html";
+                stream_prev << prefix_string << file_title << std::setfill('0') << std::setw(5) << i-1 << ".html";
                 file << "<br><br>\n";
                 if(i > 0)
                     file << "<a href=\"" << stream.str() << "\">Previous Page</a> - ";
@@ -182,7 +186,7 @@ int main(int argc, char **argv) {
     }
     else {
         std::cout << argv[0] << ": Use with arguments\n";
-        std::cout << "-p path\n-n no output thumbnail\n-r prefix string\n-t thumbnail prefix\n-s page title\n";
+        std::cout << "-p path\n-n no output thumbnail\n-r prefix string\n-t thumbnail prefix\n-s page title\n-f file title\n";
     }
     return 0;
 }
