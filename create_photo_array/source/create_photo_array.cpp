@@ -116,7 +116,7 @@ int main(int argc, char **argv) {
     std::string path;
     if(argc > 1) {
         int opt = 0;
-        while((opt = getopt(argc, argv, "p:nr:t:s:")) != -1) {
+        while((opt = getopt(argc, argv, "p:nr:t:s:f:i:")) != -1) {
             switch(opt) {
                 case 'p':
                     path = optarg;
